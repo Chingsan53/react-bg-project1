@@ -1,34 +1,53 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export default function App() {
-  const [advice, setAdvice] = useState("");
+const Counter = () => {
+  const [step, setStep] = useState(1);
   const [count, setCount] = useState(0);
 
-  async function getAdvice() {
-    const res = await fetch('https://api.adviceslip.com/advice');
-    const data = await res.json();
-    console.log(data.slip.id);
-    setAdvice(data.slip.advice);
-    setCount((c) => c + 1);
-  }
+  const stepCountIncrease = () => {
+    if (step < 10) {
+      setStep((s) => s + 1);
+    }
+  };
 
-  useEffect(function() {
-    getAdvice();
-  }, []);
+  const stepCountDecrease = () => {
+    if (step) {
+      setStep((s) => s - 1);
+    }
+  };
+
+  const countIncrease = () => {
+    setCount((updatedStep) => updatedStep + step);
+  };
+
+  const countDecrease = () => {
+    setCount((updatedStep) => updatedStep - step);
+  };
 
   return (
     <div>
-      <h1>Welcome to the advice portal!</h1>
-      <button onClick={getAdvice}>Get advice</button>
-      <p><strong>Here is the advice: </strong>{advice}</p>
-      <Message count={count}/>
-      
+      <h1>Date Counter</h1>
+      <div>
+        <button onClick={stepCountDecrease}>-</button>
+        <p>Step: {step}</p>
+        <button onClick={stepCountIncrease}>+</button>
+      </div>
+      <div>
+        <button onClick={countDecrease}>-</button>
+        <p>Count: {count}</p>
+        <button onClick={countIncrease}>+</button>
+      </div>
+      <p>{count} days from today is </p>
     </div>
   );
-}
+};
 
-function Message(props) {
+const App = () => {
   return (
-    <p>You have read <strong>{props.count}</strong> of advice(s)</p>
-  )
-}
+    <div>
+      <Counter />
+    </div>
+  );
+};
+
+export default App;
