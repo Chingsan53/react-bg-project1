@@ -4,6 +4,9 @@ const Counter = () => {
   const [step, setStep] = useState(1);
   const [count, setCount] = useState(0);
 
+  const date = new Date();
+  date.setDate(date.getDate() + count);
+
   const stepCountIncrease = () => {
     if (step < 10) {
       setStep((s) => s + 1);
@@ -29,15 +32,24 @@ const Counter = () => {
       <h1>Date Counter</h1>
       <div>
         <button onClick={stepCountDecrease}>-</button>
-        <p>Step: {step}</p>
+        <span>Step: {step}</span>
         <button onClick={stepCountIncrease}>+</button>
       </div>
       <div>
         <button onClick={countDecrease}>-</button>
-        <p>Count: {count}</p>
+        <span>Count: {count}</span>
         <button onClick={countIncrease}>+</button>
       </div>
-      <p>{count} days from today is </p>
+      <p>
+        <span>
+          {count === 0
+            ? `Today is `
+            : count < 0
+            ? `${Math.abs(count)} days ago was `
+            : `${count} days from today is `}
+        </span>
+        <span>{date.toDateString()}</span>
+      </p>
     </div>
   );
 };
