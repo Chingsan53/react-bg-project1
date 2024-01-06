@@ -1,34 +1,99 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import "./App.css";
 
-export default function App() {
-  const [advice, setAdvice] = useState("");
-  const [count, setCount] = useState(0);
+const initialItems = [
+  { id: 1, description: "Passports", quantity: 1, packed: false },
+  { id: 2, description: "Socks", quantity: 12, packed: false },
+  { id: 3, description: "ID", quantity: 1, packed: true },
+];
 
-  async function getAdvice() {
-    const res = await fetch('https://api.adviceslip.com/advice');
-    const data = await res.json();
-    console.log(data.slip.id);
-    setAdvice(data.slip.advice);
-    setCount((c) => c + 1);
-  }
-
-  useEffect(function() {
-    getAdvice();
-  }, []);
-
+const App = () => {
   return (
-    <div>
-      <h1>Welcome to the advice portal!</h1>
-      <button onClick={getAdvice}>Get advice</button>
-      <p><strong>Here is the advice: </strong>{advice}</p>
-      <Message count={count}/>
-      
+    <div className="app">
+      <Logo />
+      <Form />
+      <PackingList />
+      <Stats />
     </div>
   );
-}
+};
 
-function Message(props) {
+const Logo = () => {
   return (
-    <p>You have read <strong>{props.count}</strong> of advice(s)</p>
-  )
-}
+    <div>
+      <h1>🏙️ Boston 2024 🌇</h1>
+    </div>
+  );
+};
+
+const Form = () => {
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!description) return;
+
+    const newItem = { description, quantity, packed: false, id: Date.now() };
+    console.log(newItem);
+
+    setDescription("");
+    setQuantity(1);
+  };
+
+  return (
+    <form className="add-form" onSubmit={handleSubmit}>
+      <h3>What do you need for your trip? 😍</h3>
+      <select
+        value={quantity}
+        onChange={(e) => setQuantity(Number(e.target.value))}
+      >
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          <option value={num} key={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+      <input
+        type="text"
+        placeholder="Item..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button>Add</button>
+    </form>
+  );
+};
+
+const PackingList = () => {
+  return (
+    <div className="list">
+      <ul>
+        {initialItems.map((item) => (
+          <Item item={item} key={item.id} />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const Item = ({ item }) => {
+  return (
+    <li>
+      <span style={item.packed ? { textDecoration: "line-through" } : {}}>
+        {item.quantity} {item.description}
+      </span>
+      <button>❌</button>
+    </li>
+  );
+};
+
+const Stats = () => {
+  return (
+    <footer className="stats">
+      <em>You have X items on your list, and you already packed X (x%)</em>
+    </footer>
+  );
+};
+
+export default App;
